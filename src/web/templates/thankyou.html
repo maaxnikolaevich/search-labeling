@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="page page-center">
+        <div class="container container-tight py-4">
+            <div class="card card-md">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Не сдавайтесь - приходите завтра!</h2>
+                    <img alt="OpenID SDVOR Login"
+                         title="Sign in with OpenID SDVOR Login"
+                         class="w-100 h-100 object-cover card-img-start"
+                         src="https://www.sdvor.com/favicon.svg"
+                         loading="lazy">
+                    <p class="text-secondary">На сегодня вы оценили все результаты, спасибо за ваш вклад!</p>
+                    <div class="row">
+                        <div class="col">
+                            <a class="btn" href="https://sdvor.com/">Перейти на сайт СД</a>
+                        </div>
+                        <div class="col">
+                            <form method="post" action="{{ request.url_for('logout') }}">
+                                <button type="submit" class="btn">Выйти из профиля</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

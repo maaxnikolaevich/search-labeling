@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="page page-center">
+        <div class="container container-tight py-4">
+            <div class="card card-md">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Авторизация</h2>
+                    <div class="form-footer">
+                        <form method="post" action="{{ request.url_for('auth') }}">
+                            <button class="btn w-100" id="oauth-login-openid_connect" type="submit">
+                                <img alt="OpenID SDVOR Login"
+                                     title="Sign in with OpenID SDVOR Login"
+                                     class="icon text-github"
+                                     src="https://www.sdvor.com/favicon.svg"
+                                     loading="lazy">
+                                OpenID SDVOR Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
