@@ -1,0 +1,41 @@
+stages:
+  - build
+  - lint
+
+variables:
+  GIT_SSL_NO_VERIFY: "true"
+  SERVICE_NAME: rate-our-search
+  APP_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHORT_SHA
+
+ruff check:
+  stage: lint
+  image: $APP_IMAGE
+  tags: ["dind-sd-search"]
+  script:
+    - ruff check
+
+ruff format:
+  stage: lint
+  image: $APP_IMAGE
+  tags: [ "dind-sd-search" ]
+  script:
+    - ruff format --diff
+
+djlint:
+  stage: lint
+  image: $APP_IMAGE
+  tags: ["dind-sd-search"]
+  script:
+    - djlint ./src/web/templates --profile=jinja
+
+build:
+  stage: build
+  image: docker:28.2.1
+  tags: ["dind-sd-search"]
+  retry: 1
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $APP_IMAGE || true
+    - docker build --cache-from $APP_IMAGE -t $APP_IMAGE -f devops/Dockerfile .
+    - docker push $APP_IMAGE
+    - docker rmi -f $APP_IMAGE

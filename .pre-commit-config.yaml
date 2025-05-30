@@ -1,0 +1,28 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: ruff check
+        args: [ --fix ]
+        language: python
+        types: [ python ]
+      - id: ruff-format
+        name: ruff-format
+        entry: ruff format
+        language: python
+        types: [ python ]
+      - id: mypy
+        name: mypy
+        entry: mypy
+        args: [ --install-types ]
+        language: python
+        types: [ python ]
+      - id: djlint-jinja
+        name: djLint
+        entry: djlint ./src/web/templates --profile=jinja --check
+        language: python
+
+default_language_version:
+  python: python3.12
+default_stages: [ "pre-commit" ]

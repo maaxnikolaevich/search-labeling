@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="container mt-4" id="rate-card">
+        <div id="htmx-alert" hidden class="alert alert-danger sticky-bottom"></div>
+        <div class="card">
+            <h2>Пользователь: {{ user.email }}</h2>
+            <h2>{{ search_case.query.query }} | Популярность запроса: {{ search_case.query.usage_frequency }}</h2>
+            <ul id="result-list" class="list-group">
+                {% for result in search_case.results %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        id="{{ result.id }}">
+                        <span>
+                            <strong>{{ result.title }}</strong>
+                            <br>
+                            {{ result.product_code }} | {{ result.category }}
+                        </span>
+                        <span>
+                            <button class="btn btn-outline-success btn-sm like-btn"
+                                    hx-post="/results"
+                                    hx-vars='{"search_session_id": "{{ session.id }}", "search_result_id": "{{ result.id }}", "is_relevant": "true"}'
+                                    hx-ext='json-enc'
+                                    hx-swap="none"
+                                    hx-target="#htmx-alert ">👍</button>
+                            <button class="btn btn-outline-danger btn-sm dislike-btn"
+                                    hx-post="/results"
+                                    hx-vars='{"search_session_id": "{{ session.id }}", "search_result_id": "{{ result.id }}", "is_relevant": "false"}'
+                                    hx-ext='json-enc'
+                                    hx-swap="none">👎</button>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+            <button hx-post="/search-cases/{{ session.id }}"
+                    hx-target="#rate-card"
+                    hx-swap="outerHTML"
+                    class="btn btn-primary mt-3">К следующему запросу</button>
+        </div>
+        <div class="card-body">
+            <ul class="steps steps-green my-4">
+                {% for n in range(user.daily_quota) %}
+                    <li class="step-item {% if n == user.completed_count %}active{% endif %}">{{ n + 1 }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
