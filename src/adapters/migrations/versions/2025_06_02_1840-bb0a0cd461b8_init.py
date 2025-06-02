@@ -1,12 +1,10 @@
 """init
 
-Revision ID: 22ba668413b2
+Revision ID: bb0a0cd461b8
 Revises:
-Create Date: 2025-05-29 22:54:50.418136
+Create Date: 2025-06-02 18:40:22.976239
 
 """
-
-from __future__ import annotations
 
 from collections.abc import Sequence
 
@@ -14,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "22ba668413b2"
+revision: str = "bb0a0cd461b8"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -43,8 +41,6 @@ def upgrade() -> None:
         "users",
         sa.Column("oidc_id", sa.String(), nullable=False),
         sa.Column("email", sa.String(), nullable=True),
-        sa.Column("given_name", sa.String(), nullable=True),
-        sa.Column("family_name", sa.String(), nullable=True),
         sa.Column("completed_count", sa.Integer(), nullable=True),
         sa.Column("last_completed", sa.DateTime(), nullable=True),
         sa.Column("daily_quota", sa.Integer(), nullable=True),
@@ -53,7 +49,7 @@ def upgrade() -> None:
     op.create_table(
         "search_cases",
         sa.Column("id", sa.String(), nullable=False),
-        sa.Column("query_id", sa.String(), nullable=True),
+        sa.Column("query_id", sa.Integer(), nullable=True),
         sa.Column("time_generated", sa.DateTime(), nullable=True),
         sa.Column("is_active", sa.Boolean(), nullable=True),
         sa.ForeignKeyConstraint(
