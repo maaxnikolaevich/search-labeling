@@ -18,5 +18,17 @@ cp .env.example .env
 - Запуск
 
 ```bash
-uvicorn src.main:app --port=8000 --reload
+cd src && uvicorn main:app --port=8000 --reload
+```
+
+- Запуск в Docker через make
+```bash
+make build
+```
+```bash
+make run
+```
+- Накатываем миграции
+```bash
+make migrate
 ```

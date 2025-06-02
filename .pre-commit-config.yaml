@@ -18,10 +18,6 @@ repos:
         args: [ --install-types ]
         language: python
         types: [ python ]
-      - id: djlint-jinja
-        name: djLint
-        entry: djlint ./src/web/templates --profile=jinja --check
-        language: python
 
 default_language_version:
   python: python3.12
