@@ -15,9 +15,9 @@ services:
       - .env
     environment:
       - KEYCLOAK_URL=http://keycloakweb:8080
-      - MIDDLEWARE_SECRET_KEY=test
-      - KEYCLOAK_CLIENT=test
-      - KEYCLOAK_REALM=test
+      - POSTGRES_DB_HOST=db-app
+    depends_on:
+      - db-app
 
   keycloakweb:
     image: quay.io/keycloak/keycloak:23.0.7
@@ -36,20 +36,34 @@ services:
       KC_LOG_LEVEL: info
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-    command: start-dev
+    command: start-dev --import-realm
+    volumes:
+      - ./keycloak/imports:/opt/keycloak/data/import
     depends_on:
       - keycloakdb
     ports:
       - '127.0.0.1:8080:8080'
 
   keycloakdb:
-    image: postgres:15
+    image: postgres:17
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
+
+  db-app:
+    image: postgres:17
+    container_name: db-app
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
 
 volumes:
   postgres_data:

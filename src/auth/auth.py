@@ -13,9 +13,7 @@ async def login(request: Request, access_token: str, user_repository: AbstractUs
     if not user:
         user = User(
             userinfo["sub"],
-            userinfo["email"],
-            userinfo.get("given_name") or "",
-            userinfo.get("family_name") or "",
+            userinfo["email"]
         )
         await user_repository.save(user)
     request.session["user"] = user.to_dict()

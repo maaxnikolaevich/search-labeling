@@ -105,7 +105,7 @@ class MarkupSession:
 
 
 class User:
-    def __init__(self, oidc_id: str, email: str, given_name: str = "", family_name: str = ""):
+    def __init__(self, oidc_id: str, email: str):
         self.oidc_id = oidc_id
         self.email = email
         self.completed_count: int = 0
@@ -124,7 +124,12 @@ class User:
         self.completed_count = 0
 
     def can_rate_more(self):
-        if self.last_completed and ((datetime.now() - self.last_completed).total_seconds() / 3600 > 0.02):
+        """
+            Пользоватаель не может начать оценку если кол-во завершенных за день пользователем кейсов достиг дневной квоты
+            Если у пользователя есть дата последенего завершенного
+            и с этой даты прошло 24 часа, счетчик завершенных обнуляется
+        """
+        if self.last_completed and ((datetime.now() - self.last_completed).total_seconds() / 3600 > 24):
             self._refresh_daily_limit()
         return self.completed_count < self.daily_quota
 

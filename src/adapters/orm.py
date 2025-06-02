@@ -54,7 +54,7 @@ search_case_table = Table(
     "search_cases",
     metadata,
     Column("id", String, primary_key=True),
-    Column("query_id", String, ForeignKey("search_queries.id")),
+    Column("query_id", Integer, ForeignKey("search_queries.id")),
     Column("time_generated", DateTime, default=datetime.now),
     Column("is_active", Boolean, default=True),
 )
@@ -89,8 +89,6 @@ user_table = Table(
     metadata,
     Column("oidc_id", String, primary_key=True),
     Column("email", String),
-    Column("given_name", String),
-    Column("family_name", String),
     Column("completed_count", Integer, default=0),
     Column("last_completed", DateTime, nullable=True),
     Column("daily_quota", Integer, default=10),

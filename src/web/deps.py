@@ -55,14 +55,16 @@ async def get_user_info(request: Request) -> dict:
     return user_info
 
 
+POSTGRES_POOL_MIN_SIZE = int(os.getenv("POSTGRES_POOL_MIN_SIZE") or 5)
+DB_URL = (f"postgresql+asyncpg://{os.getenv('POSTGRES_DB_USER') or ''}:"
+          f"{os.getenv('POSTGRES_DB_PASSWORD') or ''}@{os.getenv('POSTGRES_DB_HOST') or ''}"
+          f":{os.getenv('POSTGRES_DB_PORT') or '5432'}/{os.getenv('POSTGRES_DB_NAME') or ''}")
+
 alchemy_async_engine = create_async_engine(
-    "sqlite+aiosqlite:///rate_our_search_db.sqlite",
+    DB_URL,
     echo=False,
-    # pool_size=settings.POSTGRES_POOL_MIN_SIZE,
-    # max_overflow=settings.POSTGRES_POOL_MAX_SIZE - settings.POSTGRES_POOL_MIN_SIZE,
-    # В Linux tcp_keepalive_time по умолчанию 7200,
-    # В postgres tcp_keepalives_idle по умолчанию 0,
-    # выбираем значение меньше 7200.
+    pool_size=POSTGRES_POOL_MIN_SIZE,
+    max_overflow=int(os.getenv("POSTGRES_POOL_MAX_SIZE") or 10) - POSTGRES_POOL_MIN_SIZE,
     pool_recycle=600,
     pool_pre_ping=True,
 )
