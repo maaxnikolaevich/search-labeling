@@ -9,6 +9,7 @@ from exception_handlers import (
     setup_rate_error_handler,
     setup_user_has_reached_daily_quota_exception_handler,
 )
+from healthcheck.endpoints import router as healthcheck_router
 from web.auth import router as auth_router
 from web.labeling import router
 
@@ -24,6 +25,7 @@ app.add_middleware(SessionMiddleware, secret_key="test")
 app.mount("/static", StaticFiles(directory="web/static"), name="static")
 app.include_router(router)
 app.include_router(auth_router)
+app.include_router(healthcheck_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
