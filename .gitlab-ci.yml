@@ -1,11 +1,17 @@
 stages:
   - build
   - lint
+  - commit_config
 
 variables:
   GIT_SSL_NO_VERIFY: "true"
   SERVICE_NAME: rate-our-search
   APP_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHORT_SHA
+
+include:
+  - project: devops/ci-cd/kubernetes
+    ref: main
+    file: base.yaml
 
 ruff check:
   stage: lint
@@ -39,3 +45,12 @@ build:
     - docker build --cache-from $APP_IMAGE -t $APP_IMAGE -f devops/Dockerfile .
     - docker push $APP_IMAGE
     - docker rmi -f $APP_IMAGE
+
+commit config:
+  extends: .commit
+  tags: ["dind-sd-search"]
+  stage: commit_config
+  rules:
+    - if: $CI_COMMIT_BRANCH == "development"
+      variables:
+        ENVIRONMENT: development
