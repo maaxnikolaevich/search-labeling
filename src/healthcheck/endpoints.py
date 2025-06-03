@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi.responses import UJSONResponse
 
-router = APIRouter(prefix="/healthcheck", tags=["Health check"])
+router = APIRouter(tags=["Health check"])
 
 
-@router.get("/")
+@router.get("/healthcheck")
 async def healthcheck():
     return UJSONResponse(content={"success": True, "msg": "App available"})
