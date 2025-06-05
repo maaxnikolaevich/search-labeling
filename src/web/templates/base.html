@@ -5,16 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title>Оценка поиска</title>
         <script src="{{ request.url_for('static', path='/js/htmx.min.js') }}"></script>
-        <script src="{{ request.url_for('static', path='/js/Sortable.min.js') }}" defer></script>
-        <script src="{{ request.url_for('static', path='/js/dragndrop.js') }}" defer></script>
         <script src="{{ request.url_for('static', path='/js/htmx-error-handling.js') }}" defer></script>
         <script src="{{ request.url_for('static', path='/js/json-enc.js') }}" defer></script>
         <link href="{{ request.url_for('static', path='/css/tabler.min.css') }}" rel="stylesheet" />
         <link href="{{ request.url_for('static', path='/css/main.css') }}" rel="stylesheet" />
-        <link href="{{ request.url_for('static', path='/css/labeling.css') }}" rel="stylesheet" />
         <link href="{{ request.url_for('static', path='/css/mobile.css') }}" rel="stylesheet" />
-        <link href="{{ request.url_for('static', path='/css/transitions.css') }}" rel="stylesheet" />
-
     </head>
     <body>
         {% block body %}{% endblock %}
