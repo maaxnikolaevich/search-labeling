@@ -14,12 +14,11 @@ from services.labeling import (
 )
 from web.deps import (
     check_auth,
+    get_current_user,
     get_elasticsearch_client,
     get_search_connector_client,
     get_session_repo,
     get_templates,
-    get_user_info,
-    get_user_repo,
 )
 
 router = APIRouter(dependencies=[Depends(check_auth)])
@@ -54,13 +53,11 @@ async def complete_session_handler(
 async def index(
     request: Request,
     templates=Depends(get_templates),
-    user_info=Depends(get_user_info),
+    user=Depends(get_current_user),
     analytics_adapter=Depends(get_elasticsearch_client),
     search_adapter=Depends(get_search_connector_client),
     session_repository=Depends(get_session_repo),
-    user_repository=Depends(get_user_repo),
 ):
-    user = await user_repository.get(user_info["oidc_id"])
     unfinished_session = await session_repository.get_session(user.oidc_id, started=True)
 
     if unfinished_session:
@@ -86,7 +83,7 @@ async def index(
     return RedirectResponse(url=request.url_for("rate"), status_code=status.HTTP_302_FOUND)
 
 
-@router.post("/results")
+@router.post("/results", name="rate_result")
 async def rate_search_result(data: CreateResultSchema, session_repository=Depends(get_session_repo)):
     await rate_search(
         data.search_session_id,
