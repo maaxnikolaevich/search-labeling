@@ -11,7 +11,7 @@ from models import RateError, UserHasReachedDailyQuota
 def setup_user_has_reached_daily_quota_exception_handler(app):
     @app.exception_handler(UserHasReachedDailyQuota)
     async def user_has_reached_daily_quota_exception_handler(
-        request: Request, exc: UserHasReachedDailyQuota
+        request: Request, _: UserHasReachedDailyQuota
     ) -> RedirectResponse:
         reached_daily_quota_page = request.url_for("thankyou")
 
