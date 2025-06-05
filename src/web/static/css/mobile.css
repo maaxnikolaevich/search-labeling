@@ -106,6 +106,10 @@
         margin: 0 0.5rem;
     }
 
+    /* Adjust alert width for mobile */
+    #htmx-alert {
+        width: calc(100% - 30px)
+    }
     /* Next case button in mobile */
     .next-case-footer {
         position: fixed;
