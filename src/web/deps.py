@@ -19,6 +19,7 @@ from adapters.orm import start_mappers
 from adapters.repository import MarkupSessionRepository, UserRepository
 from adapters.search_adapter import SearchConnectorClient
 from auth.auth import authenticate
+from models import User
 
 base_path = Path(__file__).resolve().parent
 
@@ -27,32 +28,8 @@ def get_templates():
     return Jinja2Templates(directory=str(base_path / "templates"))
 
 
-async def check_auth(request: Request):
-    login_path = request.url_for("preview")
-    is_auth = authenticate(request)
-
-    if not is_auth:
-        if request.headers.get("HX-Request") == "true":
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                headers={"HX-Redirect": str(login_path)},
-            )
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_307_TEMPORARY_REDIRECT,
-                headers={"Location": str(login_path)},
-            )
-
-
 class UserNotFoundError(Exception):
     pass
-
-
-async def get_user_info(request: Request) -> dict:
-    user_info = request.session.get("user")
-    if not user_info:
-        raise UserNotFoundError("User not found")
-    return user_info
 
 
 POSTGRES_POOL_MIN_SIZE = int(os.getenv("POSTGRES_POOL_MIN_SIZE") or 5)
@@ -102,6 +79,39 @@ def get_session_repo(session: DBSessionDep) -> MarkupSessionRepository:
 
 def get_user_repo(session: DBSessionDep) -> UserRepository:
     return UserRepository(session)
+
+
+async def get_current_user(request: Request, user_repo: UserRepository = Depends(get_user_repo)) -> User:
+    user_info = request.scope.get("user")
+
+    if not user_info:
+        raise UserNotFoundError
+
+    user = await user_repo.get(user_info["oidc_id"])
+
+    if not user:
+        raise UserNotFoundError
+
+    return user
+
+
+async def check_auth(request: Request, db_session_: DBSessionDep, user_repository=Depends(get_user_repo)):
+    login_path = request.url_for("preview")
+
+    is_auth = await authenticate(request, user_repository)
+    await db_session_.commit()
+
+    if not is_auth:
+        if request.headers.get("HX-Request") == "true":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                headers={"HX-Redirect": str(login_path)},
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_307_TEMPORARY_REDIRECT,
+                headers={"Location": str(login_path)},
+            )
 
 
 @functools.cache
