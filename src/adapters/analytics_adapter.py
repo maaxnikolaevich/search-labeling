@@ -19,23 +19,28 @@ class ElasticsearchClient:
         self._auth = (self._login, self._password)
         self._headers = {"content-type": "application/json"}
 
-    async def get_cerebro_top_search_queries(self, size: int = 100) -> list[SearchQuery]:
+    async def get_cerebro_top_search_queries(
+        self, size: int, excluded_queries: list[str] | None = None
+    ) -> list[SearchQuery]:
         """
         Топ популярных запросов в Cerebro
         """
         url = urljoin(self._url, "/cerebro_events/_search")
         aggs_field_name = "data"
+        query = {
+            "bool": {
+                "must": [
+                    {"exists": {"field": "event.phrase.keyword"}},
+                    {"range": {"event_datetime": {"gte": "now-30d/d", "lte": "now/d"}}},
+                ]
+            }
+        }
+        if excluded_queries:
+            query["bool"]["must_not"] = [{"terms": {"event.phrase.keyword": excluded_queries}}]
 
         body = {
             "size": 0,
-            "query": {
-                "bool": {
-                    "must": [
-                        {"exists": {"field": "event.phrase.keyword"}},
-                        {"range": {"event_datetime": {"gte": "now-30d/d", "lte": "now/d"}}},
-                    ]
-                }
-            },
+            "query": query,
             "aggs": {
                 aggs_field_name: {
                     "terms": {

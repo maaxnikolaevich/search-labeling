@@ -52,7 +52,7 @@ function showTempAlert(message, type) {
 
     const alert = document.createElement('div');
     alert.className = `alert alert-${type} position-fixed top-0 end-0 m-3 temp-alert`;
-    alert.style.zIndex = '1000';
+    alert.style.zIndex = '1050';
     alert.textContent = message;
     document.body.appendChild(alert);
 
@@ -68,6 +68,23 @@ document.body.addEventListener('htmx:afterRequest', function(evt) {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const footer = document.querySelector('.next-case-footer');
+
+    function handleScroll() {
+        const scrollTop = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        if (scrollTop + windowHeight >= documentHeight - 150) {
+            footer.classList.add('show');
+        } else {
+            footer.classList.remove('show');
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+});
 // Инициализация при загрузке и после HTMX-обновлений
 //document.addEventListener('DOMContentLoaded', initSortableAndHandlers);
 //document.addEventListener('htmx:afterSwap', initSortableAndHandlers);

@@ -5,17 +5,19 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 from starlette import status
 
+from adapters import queries
 from services.labeling import (
-    assign_cases_to_user,
     complete_session,
-    get_new_cases,
+    load_new_cases,
     rate_search,
     start_markup_session,
 )
 from web.deps import (
+    DBSessionDep,
     check_auth,
     get_current_user,
     get_elasticsearch_client,
+    get_search_cases_repo,
     get_search_connector_client,
     get_session_repo,
     get_templates,
@@ -52,13 +54,15 @@ async def complete_session_handler(
 @router.get("/", response_class=HTMLResponse, name="rate")
 async def index(
     request: Request,
+    db_session: DBSessionDep,
     templates=Depends(get_templates),
     user=Depends(get_current_user),
     analytics_adapter=Depends(get_elasticsearch_client),
     search_adapter=Depends(get_search_connector_client),
     session_repository=Depends(get_session_repo),
+    search_cases_repo=Depends(get_search_cases_repo),
 ):
-    unfinished_session = await session_repository.get_session(user.oidc_id, started=True)
+    unfinished_session = await session_repository.find_by_user_id(user.oidc_id, started=True)
 
     if unfinished_session:
         return templates.TemplateResponse(
@@ -71,14 +75,18 @@ async def index(
             },
         )
 
-    session = await session_repository.get_session(user.oidc_id)
-    if session:
-        await start_markup_session(session, session_repository)
-        return RedirectResponse(url=request.url_for("rate"), status_code=status.HTTP_302_FOUND)
+    cases = await queries.get_active_cases(db_session=db_session, user_id=user.oidc_id, limit=1)
+    if not cases:
+        cases = await load_new_cases(
+            analytics_adapter=analytics_adapter,
+            search_adapter=search_adapter,
+            cases_repo=search_cases_repo,
+            db_session=db_session,
+            cases_count=20,
+            results_limit_per_case=10,
+        )
 
-    cases = await get_new_cases(analytics_adapter, search_adapter, 20)
-
-    await assign_cases_to_user(cases, user, session_repository)
+    await start_markup_session(user, cases[0], session_repository)
 
     return RedirectResponse(url=request.url_for("rate"), status_code=status.HTTP_302_FOUND)
 

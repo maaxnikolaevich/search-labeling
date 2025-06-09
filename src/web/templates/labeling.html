@@ -9,7 +9,7 @@
             <!-- Desktop Steps (Horizontal) -->
             <div class="d-none d-md-block mb-4">
                 <ul class="steps steps-primary">
-                    {% for n in range(user.daily_quota) %}
+                    {% for n in range(user.daily_minimum) %}
                         <li class="step-item {% if n == user.completed_count %}active{% endif %}">{{ n + 1 }}</li>
                     {% endfor %}
                 </ul>
@@ -18,17 +18,17 @@
             <div class="d-md-none steps-vertical-container">
                 <div class="steps-line"></div>
                 <ul class="steps steps-vertical">
-                    {% for n in range(user.daily_quota) %}
+                    {% for n in range(user.daily_minimum) %}
                         <li class="step-item {% if n == user.completed_count %}active{% endif %}"></li>
                     {% endfor %}
                 </ul>
             </div>
             <!-- Main Content Card -->
             <div class="card card-lg">
-                <div class="card-header border-bottom">
+                <div class="card-header border-bottom fixed-header">
                     <div class="card-title">
-                        <h2 class="mb-0">"{{ search_case.query.query }}"</h2>
-                        <div class="text-muted">Популярность запроса: {{ search_case.query.usage_frequency }}</div>
+                        <h2 class="mb-0 text-break">"{{ search_case.query.query }}"</h2>
+                        <div class="text-muted">Популярность запроса за месяц: {{ search_case.query.usage_frequency }}</div>
                     </div>
                     <div class="card-actions">
                         <div class="text-muted">{{ user.email }}</div>
