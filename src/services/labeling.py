@@ -96,6 +96,18 @@ async def complete_session(session_id: str, session_repo: AbstractMarkupSessionR
     await session_repo.save(session)
 
 
+async def skip_session(session_id: str, session_repo: AbstractMarkupSessionRepository):
+    """Завершает сессию разметки"""
+    session = await session_repo.get(session_id)
+
+    if not session:
+        raise RateError("Сессия не найдена")
+
+    session.skip()
+
+    await session_repo.save(session)
+
+
 async def start_markup_session(
     user: User, search_case: SearchCase, session_repository: AbstractMarkupSessionRepository
 ):

@@ -5,6 +5,7 @@
         <meta name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1">
         <title>Оценка поиска</title>
+        <meta name="htmx-config" content='{"includeIndicatorStyles": false}'>
         <script src="{{ request.url_for('static', path='/js/htmx.min.js') }}"></script>
         <script src="{{ request.url_for('static', path='/js/htmx-error-handling.js') }}"
                 defer></script>
@@ -20,6 +21,9 @@
               rel="stylesheet" />
     </head>
     <body>
+        <div id="spinner" class="htmx-indicator">
+        <h1>Подгружаем запросы<span class="animated-dots"></span></h1>
+    </div>
         {% block body %}{% endblock %}
     </body>
 </html>

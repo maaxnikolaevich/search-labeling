@@ -1,5 +1,5 @@
 // Constants
-const ALERT_DISPLAY_TIME = 2000; // 2 seconds
+const ALERT_DISPLAY_TIME = 5000; // 2 seconds
 const ERROR_MESSAGES = {
     422: (xhr) => `Ошибка валидации: ${JSON.parse(xhr.responseText).detail}`,
     400: (xhr) => `Невозможно совершить операцию: ${JSON.parse(xhr.responseText).error.message}`,

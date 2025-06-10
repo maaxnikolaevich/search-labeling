@@ -68,6 +68,7 @@ class MarkupSession:
         self.results = list()  # type: list[MarkupResult]
         self.started_at = None  # type: datetime | None
         self.completed_at = None  # type: datetime | None
+        self.is_skipped = False
 
     def __eq__(self, other):
         if not isinstance(other, MarkupSession):
@@ -76,6 +77,13 @@ class MarkupSession:
 
     def __hash__(self):
         return hash(self.id)
+
+    def skip(self):
+        """
+        Пользователь пропускает сессию разметки, увеличивается счетчик пропусков
+        """
+        self.is_skipped = True
+        self.user.skip_case()
 
     def start(self):
         if not self.user.can_rate_more():
@@ -113,6 +121,7 @@ class User:
         self.last_completed: datetime | None = None
         self.daily_minimum = 20
         self.daily_limit = int(os.getenv("DAILY_USER_LIMIT") or 500)
+        self.skipped_count = 0
 
     def __eq__(self, other):
         if not isinstance(other, User):
@@ -124,6 +133,12 @@ class User:
 
     def _refresh_progress(self):
         self.completed_count = 0
+
+    def skip_case(self):
+        """
+        Пользователь пропускает кейс, увеличивается счетчик пропусков
+        """
+        self.skipped_count += 1
 
     def can_rate_more(self):
         """
