@@ -51,6 +51,15 @@
     align-items: center; /* Center buttons vertically */
 }
 
+/* Add positioning for the card to make it a relative container */
+.card-lg {
+    position: relative;
+    margin-top: 4vh;
+}
+/* Adjust alert position */
+#htmx-alert {
+    margin-top: 5vh; /* Add margin to push alert below header */
+}
 /* Desktop Styles */
 @media (min-width: 768px) {
     /* Previous desktop styles remain */
@@ -82,6 +91,15 @@
         max-height: 200px;
     }
 
+    /* Add positioning for the card to make it a relative container */
+    .card-lg {
+        position: relative;
+        margin-top: 6vh;
+    }
+    /* Adjust alert position */
+    #htmx-alert {
+        margin-top: 10vh; /* Add margin to push alert below header */
+    }
     /* Adjust spacing for images in mobile view */
     .list-group-item {
         padding: 1.5rem !important;
@@ -106,14 +124,6 @@
         position: relative;
     }
 
-    /* Add positioning for the card to make it a relative container */
-    .card-lg {
-        margin-right: 30px;
-        padding-bottom: 80px;
-        position: relative;
-        margin-top: 80px;
-    }
-
     /* Action buttons in mobile view */
     .action-buttons {
         width: 100%;
@@ -128,11 +138,5 @@
     .action-buttons .btn {
         flex: 1;
         margin: 0 0.5rem;
-    }
-
-    /* Adjust alert position */
-    #htmx-alert {
-        width: calc(100% - 30px);
-        margin-top: 80px; /* Add margin to push alert below header */
     }
 }

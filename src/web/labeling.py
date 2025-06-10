@@ -10,6 +10,7 @@ from services.labeling import (
     complete_session,
     load_new_cases,
     rate_search,
+    skip_session,
     start_markup_session,
 )
 from web.deps import (
@@ -48,6 +49,16 @@ async def complete_session_handler(
     session_repository=Depends(get_session_repo),
 ):
     await complete_session(current_session_id, session_repository)
+    return RedirectResponse(url=request.url_for("rate"), status_code=status.HTTP_302_FOUND)
+
+
+@router.post("/search-cases/{currentSessionId}/missed")
+async def skip_session_handler(
+    request: Request,
+    current_session_id: str = Path(alias="currentSessionId"),
+    session_repository=Depends(get_session_repo),
+):
+    await skip_session(current_session_id, session_repository)
     return RedirectResponse(url=request.url_for("rate"), status_code=status.HTTP_302_FOUND)
 
 

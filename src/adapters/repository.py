@@ -51,7 +51,7 @@ class MarkupSessionRepository(AbstractMarkupSessionRepository):
     async def find_by_user_id(
         self, user_id: str, started: bool = False, finished: bool = False
     ) -> MarkupSession | None:
-        stmt = select(MarkupSession).filter_by(user_id=user_id)
+        stmt = select(MarkupSession).filter_by(user_id=user_id, is_skipped=False)
 
         if started:
             stmt = stmt.filter(

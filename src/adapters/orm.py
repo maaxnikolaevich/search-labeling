@@ -59,6 +59,7 @@ markup_session_table = Table(
     Column("user_id", String, ForeignKey("users.oidc_id")),
     Column("started_at", DateTime, nullable=True),
     Column("completed_at", DateTime, nullable=True),
+    Column("is_skipped", Boolean, server_default=text("false"), nullable=False),
 )
 
 # Таблица для MarkupResult
@@ -83,6 +84,7 @@ user_table = Table(
     Column("last_completed", DateTime, nullable=True),
     Column("daily_minimum", Integer, server_default=text("20"), nullable=False),
     Column("daily_limit", Integer, server_default=text("500"), nullable=False),
+    Column("skipped_count", Integer, server_default=text("0"), nullable=False),
 )
 
 
