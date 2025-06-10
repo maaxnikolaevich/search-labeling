@@ -32,6 +32,8 @@ djlint:
   image: $APP_IMAGE
   tags: ["dind-sd-search"]
   script:
+    - pwd
+    - ls -la
     - djlint app/src/web/templates --profile=jinja --check
 
 build:
