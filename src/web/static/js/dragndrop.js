@@ -68,23 +68,6 @@ document.body.addEventListener('htmx:afterRequest', function(evt) {
     }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const footer = document.querySelector('.next-case-footer');
-
-    function handleScroll() {
-        const scrollTop = window.scrollY;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-
-        if (scrollTop + windowHeight >= documentHeight - 150) {
-            footer.classList.add('show');
-        } else {
-            footer.classList.remove('show');
-        }
-    }
-
-    window.addEventListener('scroll', handleScroll);
-});
 // Инициализация при загрузке и после HTMX-обновлений
 //document.addEventListener('DOMContentLoaded', initSortableAndHandlers);
 //document.addEventListener('htmx:afterSwap', initSortableAndHandlers);

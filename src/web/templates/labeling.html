@@ -28,7 +28,7 @@
                 <div class="card-header border-bottom fixed-header">
                     <div class="card-title">
                         <h2 class="mb-0 text-break">"{{ search_case.query.query }}"</h2>
-                        <div class="text-muted">Популярность запроса за месяц: {{ search_case.query.usage_frequency }}</div>
+                        <div class="text-muted">Частота использования запроса за месяц: {{ search_case.query.usage_frequency }}</div>
                     </div>
                     <div class="card-actions">
                         <div class="text-muted">{{ user.email }}</div>
@@ -107,3 +107,4 @@
         </div>
     </div>
 {% endblock %}
+
