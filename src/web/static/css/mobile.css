@@ -135,24 +135,4 @@
         width: calc(100% - 30px);
         margin-top: 80px; /* Add margin to push alert below header */
     }
-    /* Next case button in mobile */
-    .next-case-footer {
-        opacity: 0;
-        transform: translateY(100%);
-        pointer-events: none;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 1rem;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-    }
-    .next-case-footer.show {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
 }
