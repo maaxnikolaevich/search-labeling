@@ -6,32 +6,38 @@
                  id="htmx-alert"
                  hidden
                  class="alert alert-danger sticky-bottom"></div>
-<!--            &lt;!&ndash; Desktop Steps (Horizontal) &ndash;&gt;-->
-<!--            <div class="d-none d-md-block mb-4">-->
-<!--                <ul class="steps steps-primary">-->
-<!--                    {% for n in range(user.daily_minimum) %}-->
-<!--                        <li class="step-item {% if n == user.completed_count %}active{% endif %}">{{ n + 1 }}</li>-->
-<!--                    {% endfor %}-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--            &lt;!&ndash; Mobile Steps (Vertical) &ndash;&gt;-->
-<!--            <div class="d-md-none steps-vertical-container">-->
-<!--                <div class="steps-line"></div>-->
-<!--                <ul class="steps steps-vertical">-->
-<!--                    {% for n in range(user.daily_minimum) %}-->
-<!--                        <li class="step-item {% if n == user.completed_count %}active{% endif %}"></li>-->
-<!--                    {% endfor %}-->
-<!--                </ul>-->
-<!--            </div>-->
+            <!--            &lt;!&ndash; Desktop Steps (Horizontal) &ndash;&gt;-->
+            <!--            <div class="d-none d-md-block mb-4">-->
+            <!--                <ul class="steps steps-primary">-->
+            <!--                    {% for n in range(user.daily_minimum) %}-->
+            <!--                        <li class="step-item {% if n == user.completed_count %}active{% endif %}">{{ n + 1 }}</li>-->
+            <!--                    {% endfor %}-->
+            <!--                </ul>-->
+            <!--            </div>-->
+            <!--            &lt;!&ndash; Mobile Steps (Vertical) &ndash;&gt;-->
+            <!--            <div class="d-md-none steps-vertical-container">-->
+            <!--                <div class="steps-line"></div>-->
+            <!--                <ul class="steps steps-vertical">-->
+            <!--                    {% for n in range(user.daily_minimum) %}-->
+            <!--                        <li class="step-item {% if n == user.completed_count %}active{% endif %}"></li>-->
+            <!--                    {% endfor %}-->
+            <!--                </ul>-->
+            <!--            </div>-->
             <!-- Main Content Card -->
             <div class="card card-lg">
                 <div class="card-header border-bottom fixed-header">
                     <div class="card-title">
                         <h2 class="mb-0 text-break">"{{ search_case.query.query }}"</h2>
                         <div class="text-muted">Частота использования запроса за месяц: {{ search_case.query.usage_frequency }}</div>
-                        <div class="text-muted">Оценено {{user.completed_count}} из макс. возможных {{ user.daily_limit }}</div>
-                        <div class="text-orange" {% if user.daily_minimum <= user.completed_count %} hidden="true" {% endif %} > До необходимого минимума осталось: {{user.daily_minimum - user.completed_count}} кейс(ов)</div>
-                        <div class="text-green" {% if user.daily_minimum > user.completed_count %} hidden="true" {%endif %} >Вы выполнили дневную норму!</div>
+                        <div class="text-muted">Оценено {{ user.completed_count }} из макс. возможных {{ user.daily_limit }}</div>
+                        <div class="text-orange"
+                             {% if user.daily_minimum <= user.completed_count %}hidden="true"{% endif %}>
+                            До необходимого минимума осталось: {{ user.daily_minimum - user.completed_count }} кейс(ов)
+                        </div>
+                        <div class="text-green"
+                             {% if user.daily_minimum > user.completed_count %}hidden="true"{% endif %}>
+                            Вы выполнили дневную норму!
+                        </div>
                     </div>
                     <div class="card-actions">
                         <div class="text-muted">{{ user.email }}</div>
@@ -45,7 +51,9 @@
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
                         {% for result in search_case.results %}
-                            <div class="list-group-item p-4" id="{{ result.id }}" {% if loop.first %} tabindex="-1" autofocus {% endif %}>
+                            <div class="list-group-item p-4"
+                                 id="{{ result.id }}"
+                                 {% if loop.first %}tabindex="-1" autofocus{% endif %}>
                                 <div class="d-flex flex-column flex-md-row gap-3">
                                     <!-- Product Image -->
                                     <div class="product-image-container">
@@ -100,7 +108,8 @@
                     </div>
                 </div>
                 <!-- Next Case Button -->
-                <div class="card-footer next-case-footer d-flex flex-column flex-md-row justify-content-between" hx-indicator="#spinner">
+                <div class="card-footer next-case-footer d-flex flex-column flex-md-row justify-content-between"
+                     hx-indicator="#spinner">
                     <button hx-post="/search-cases/{{ session.id }}"
                             hx-target="#rate-card"
                             hx-swap="outerHTML"
@@ -109,9 +118,9 @@
                             hx-confirm="Вы уверены что хотите пропустить запрос? Вернуться к нему больше не получится."
                             hx-target="#rate-card"
                             hx-swap="outerHTML"
-                            class="btn btn-warning w-100 mb-2 mb-md-0 me-md-2">Пропустить</button></div>
+                            class="btn btn-warning w-100 mb-2 mb-md-0 me-md-2">Пропустить</button>
+                </div>
             </div>
         </div>
     </div>
-
 {% endblock %}
