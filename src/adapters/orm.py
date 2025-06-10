@@ -2,17 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    MetaData,
-    String,
-    Table,
-    create_engine,
-)
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, MetaData, String, Table, create_engine, text
 from sqlalchemy.orm import registry, relationship, sessionmaker
 
 import models
@@ -25,7 +15,7 @@ search_query_table = Table(
     "search_queries",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("query", String),
+    Column("query", String, unique=True),
     Column("usage_frequency", Integer),
 )
 
@@ -91,7 +81,8 @@ user_table = Table(
     Column("email", String),
     Column("completed_count", Integer, default=0),
     Column("last_completed", DateTime, nullable=True),
-    Column("daily_quota", Integer, default=10),
+    Column("daily_minimum", Integer, server_default=text("20"), nullable=False),
+    Column("daily_limit", Integer, server_default=text("500"), nullable=False),
 )
 
 

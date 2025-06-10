@@ -52,7 +52,7 @@ function showTempAlert(message, type) {
 
     const alert = document.createElement('div');
     alert.className = `alert alert-${type} position-fixed top-0 end-0 m-3 temp-alert`;
-    alert.style.zIndex = '1000';
+    alert.style.zIndex = '1050';
     alert.textContent = message;
     document.body.appendChild(alert);
 

@@ -16,7 +16,7 @@ from starlette.requests import Request
 
 from adapters.analytics_adapter import ElasticsearchClient
 from adapters.orm import start_mappers
-from adapters.repository import MarkupSessionRepository, UserRepository
+from adapters.repository import MarkupSessionRepository, SearchCaseRepository, UserRepository
 from adapters.search_adapter import SearchConnectorClient
 from auth.auth import authenticate
 from models import User
@@ -79,6 +79,10 @@ def get_session_repo(session: DBSessionDep) -> MarkupSessionRepository:
 
 def get_user_repo(session: DBSessionDep) -> UserRepository:
     return UserRepository(session)
+
+
+def get_search_cases_repo(session: DBSessionDep) -> SearchCaseRepository:
+    return SearchCaseRepository(session)
 
 
 async def get_current_user(request: Request, user_repo: UserRepository = Depends(get_user_repo)) -> User:

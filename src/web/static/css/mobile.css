@@ -19,6 +19,29 @@
     object-fit: contain;
 }
 
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.container {
+  padding-top: 80px; /* Add padding to accommodate fixed header */
+}
+
+/* Next case button in mobile */
+.next-case-footer {
+    position: center;
+    padding: 1rem;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
 /* Adding result line styles for desktop */
 .action-buttons {
     padding-top: 1rem;
@@ -68,8 +91,8 @@
     .steps-vertical-container {
         position: fixed;
         right: 0;
-        top: 0;
-        height: 95%;
+        top: 80px; /* Adjust top position to be below header */
+        height: calc(95% - 80px); /* Adjust height to account for header */
         z-index: 2;
         padding: 0;
     }
@@ -88,6 +111,7 @@
         margin-right: 30px;
         padding-bottom: 80px;
         position: relative;
+        margin-top: 80px;
     }
 
     /* Action buttons in mobile view */
@@ -106,19 +130,9 @@
         margin: 0 0.5rem;
     }
 
-    /* Adjust alert width for mobile */
+    /* Adjust alert position */
     #htmx-alert {
-        width: calc(100% - 30px)
-    }
-    /* Next case button in mobile */
-    .next-case-footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 1rem;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
+        width: calc(100% - 30px);
+        margin-top: 80px; /* Add margin to push alert below header */
     }
 }

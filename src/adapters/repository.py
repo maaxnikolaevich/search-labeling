@@ -30,7 +30,7 @@ class AbstractMarkupSessionRepository:
     async def get(self, session_id: str) -> MarkupSession | None: ...
 
     @abc.abstractmethod
-    async def get_session(
+    async def find_by_user_id(
         self, user_id: str, started: bool = False, finished: bool = False
     ) -> MarkupSession | None: ...
 
@@ -48,7 +48,9 @@ class MarkupSessionRepository(AbstractMarkupSessionRepository):
     async def get(self, session_id: str) -> MarkupSession | None:
         return await self._session.get(MarkupSession, session_id)
 
-    async def get_session(self, user_id: str, started: bool = False, finished: bool = False) -> MarkupSession | None:
+    async def find_by_user_id(
+        self, user_id: str, started: bool = False, finished: bool = False
+    ) -> MarkupSession | None:
         stmt = select(MarkupSession).filter_by(user_id=user_id)
 
         if started:
@@ -83,6 +85,17 @@ class UserRepository(AbstractUserRepository):
 
     async def get(self, oidc_id: str) -> User | None:
         return await self._session.get(User, oidc_id)
+
+
+class SearchCaseRepository(AbstractSearchCaseRepository):
+    def __init__(self, session: AsyncSession):
+        self._session = session
+
+    async def get(self, case_id: str) -> SearchCase | None:
+        return await self._session.get(SearchCase, case_id)
+
+    async def save_all(self, cases: list[SearchCase]):
+        self._session.add_all(cases)
 
 
 class FakeUserRepository(AbstractUserRepository):
@@ -123,7 +136,9 @@ class FakeSessionRepository(AbstractMarkupSessionRepository):
         user = next((session for session in self._sessions if session.id == session_id), None)
         return user
 
-    async def get_session(self, user_id: str, started: bool = False, finished: bool = False) -> MarkupSession | None:
+    async def find_by_user_id(
+        self, user_id: str, started: bool = False, finished: bool = False
+    ) -> MarkupSession | None:
         if finished:
             return next(
                 (session for session in self._sessions if session.user.oidc_id == user_id and session.completed_at),
@@ -149,8 +164,3 @@ class FakeSessionRepository(AbstractMarkupSessionRepository):
 
     async def save(self, session: MarkupSession):
         self._sessions.add(session)
-
-
-repository = FakeUserRepository()
-session_repository = FakeSessionRepository()
-cases_repository = FakeCaseRepository()
