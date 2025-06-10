@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import os
 import uuid
 from datetime import datetime
 
@@ -108,9 +109,10 @@ class User:
     def __init__(self, oidc_id: str, email: str):
         self.oidc_id = oidc_id
         self.email = email
-        self.completed_count: int = 0
+        self.completed_count = 0
         self.last_completed: datetime | None = None
-        self.daily_quota: int = 2
+        self.daily_minimum = 20
+        self.daily_limit = int(os.getenv("DAILY_USER_LIMIT") or 500)
 
     def __eq__(self, other):
         if not isinstance(other, User):
@@ -120,7 +122,7 @@ class User:
     def __hash__(self):
         return hash(self.oidc_id)
 
-    def _refresh_daily_limit(self):
+    def _refresh_progress(self):
         self.completed_count = 0
 
     def can_rate_more(self):
@@ -130,8 +132,8 @@ class User:
         и с этой даты прошло 24 часа, счетчик завершенных обнуляется
         """
         if self.last_completed and ((datetime.now() - self.last_completed).total_seconds() / 3600 > 24):
-            self._refresh_daily_limit()
-        return self.completed_count < self.daily_quota
+            self._refresh_progress()
+        return self.completed_count < self.daily_limit
 
     def to_dict(self):
         return {"oidc_id": self.oidc_id, "email": self.email}

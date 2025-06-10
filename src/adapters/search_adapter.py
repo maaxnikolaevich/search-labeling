@@ -17,10 +17,10 @@ class SearchConnectorClient:
         self._url = url
         self._headers = {"content-type": "application/json", "x-api-key": api_key}
 
-    async def search(self, query: str) -> list[SearchResult]:
+    async def search(self, query: str, limit: int) -> list[SearchResult]:
         url = urljoin(self._url, "/api/v2/dev/materials")
 
-        params = {"saleOrganisation": 1000, "query": query, "limit": 5}
+        params = {"saleOrganisation": 1000, "query": query, "limit": limit}
 
         async with httpx.AsyncClient(headers=self._headers) as client:
             response = await client.get(url=url, headers=self._headers, params=params)  # type: ignore
