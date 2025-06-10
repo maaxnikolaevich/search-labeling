@@ -30,7 +30,8 @@
                         <h2 class="mb-0 text-break">"{{ search_case.query.query }}"</h2>
                         <div class="text-muted">Частота использования запроса за месяц: {{ search_case.query.usage_frequency }}</div>
                         <div class="text-muted">Оценено {{user.completed_count}} из макс. возможных {{ user.daily_limit }}</div>
-                        <div class="text-muted">Необходимый минимум за день: {{user.daily_minimum}}</div>
+                        <div class="text-orange" {% if user.daily_minimum <= user.completed_count %} hidden="true" {% endif %} > До необходимого минимума осталось: {{user.daily_minimum - user.completed_count}} кейс(ов)</div>
+                        <div class="text-green" {% if user.daily_minimum > user.completed_count %} hidden="true" {%endif %} >Вы выполнили дневную норму!</div>
                     </div>
                     <div class="card-actions">
                         <div class="text-muted">{{ user.email }}</div>
