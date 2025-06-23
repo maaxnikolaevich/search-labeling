@@ -1,17 +1,21 @@
 from __future__ import annotations
 
+from dataclasses import asdict
+
 from fastapi import APIRouter, Depends, Path, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 from starlette import status
+from starlette.responses import Response
 
 from adapters import queries
+from models import MarkupSession
 from services.labeling import (
     complete_session,
     load_new_cases,
     rate_search,
     skip_session,
-    start_markup_session,
+    start_new_markup_session,
 )
 from web.deps import (
     DBSessionDep,
@@ -73,18 +77,29 @@ async def index(
     session_repository=Depends(get_session_repo),
     search_cases_repo=Depends(get_search_cases_repo),
 ):
-    unfinished_session = await session_repository.find_by_user_id(user.oidc_id, started=True)
-
+    unfinished_session: MarkupSession | None = await session_repository.find_by_user_id(user.oidc_id, started=True)
     if unfinished_session:
-        return templates.TemplateResponse(
-            "labeling.html",
-            {
-                "request": request,
-                "search_case": unfinished_session.search_case,
-                "user": unfinished_session.user,
-                "session": unfinished_session,
-            },
-        )
+        unfinished_session.start()
+
+        search_results = []
+
+        for result in unfinished_session.search_case.results:
+            data = asdict(result)
+            for markup_result in unfinished_session.results:
+                if markup_result.search_result_id == result.id:
+                    data["is_relevant"] = markup_result.is_relevant
+            search_results.append(data)
+
+        content = {
+            "request": request,
+            "search_case": unfinished_session.search_case,
+            "user": unfinished_session.user,
+            "session": unfinished_session,
+            "search_results": search_results,
+        }
+
+        await session_repository.save(unfinished_session)
+        return templates.TemplateResponse("labeling.html", content)
 
     cases = await queries.get_active_cases(db_session=db_session, user_id=user.oidc_id, limit=1)
     if not cases:
@@ -97,7 +112,7 @@ async def index(
             results_limit_per_case=10,
         )
 
-    await start_markup_session(user, cases[0], session_repository)
+    await start_new_markup_session(user, cases[0], session_repository)
 
     return RedirectResponse(url=request.url_for("rate"), status_code=status.HTTP_302_FOUND)
 
@@ -111,3 +126,4 @@ async def rate_search_result(data: CreateResultSchema, session_repository=Depend
         data.search_result_id,
         session_repository,
     )
+    return Response(status_code=status.HTTP_204_NO_CONTENT, headers={"HX-Refresh": "true"})
