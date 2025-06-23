@@ -28,6 +28,8 @@
   background-color: #fff;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  min-height: 64px;
+  transition: min-height 0.2s;
 }
 
 /* Next case button in mobile */
@@ -133,7 +135,8 @@
         order: 2
     }
 
-    .fixed-header .header-extra-info {
-        display: none;
+    .fixed-header {
+        min-height: 56px; /* Меньшая высота для мобильных */
+        padding: 0.5rem 1rem;
     }
 }
