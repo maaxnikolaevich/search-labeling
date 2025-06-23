@@ -4,13 +4,15 @@
         <meta charset="UTF-8">
         <meta name="viewport"
               content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>Оценка поиска</title>
+        <title>Оценка поисковых запросов</title>
         <meta name="htmx-config" content='{"includeIndicatorStyles": false}'>
+        <link rel="icon"
+              type="image/x-icon"
+              href="{{ request.url_for('static', path='/images/favicon.ico') }}">
         <script src="{{ request.url_for('static', path='/js/htmx.min.js') }}"></script>
-        <script src="{{ request.url_for('static', path='/js/htmx-error-handling.js') }}"
+        <script src="{{ request.url_for('static', path='/js/htmx-handling.js') }}"
                 defer></script>
         <script src="{{ request.url_for('static', path='/js/json-enc.js') }}" defer></script>
-        <script src="{{ request.url_for('static', path='/js/dragndrop.js') }}" defer></script>
         <script src="{{ request.url_for('static', path='/js/Sortable.min.js') }}"
                 defer></script>
         <link href="{{ request.url_for('static', path='/css/tabler.min.css') }}"
@@ -23,7 +25,7 @@
     <body>
         <div id="spinner" class="htmx-indicator">
             <h1>
-                Подгружаем запросы<span class="animated-dots"></span>
+                Обработка запроса<span class="animated-dots"></span>
             </h1>
         </div>
         {% block body %}{% endblock %}

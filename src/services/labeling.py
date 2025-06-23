@@ -108,7 +108,7 @@ async def skip_session(session_id: str, session_repo: AbstractMarkupSessionRepos
     await session_repo.save(session)
 
 
-async def start_markup_session(
+async def start_new_markup_session(
     user: User, search_case: SearchCase, session_repository: AbstractMarkupSessionRepository
 ):
     session = MarkupSession.create(user, search_case)

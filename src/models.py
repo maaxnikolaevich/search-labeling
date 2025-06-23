@@ -88,7 +88,9 @@ class MarkupSession:
     def start(self):
         if not self.user.can_rate_more():
             raise UserHasReachedDailyQuota
-        self.started_at = datetime.now()
+
+        if not self.started_at:
+            self.started_at = datetime.now()
 
     def add_result(self, result: MarkupResult):
         """Добавляет или обновляет оценку результата"""

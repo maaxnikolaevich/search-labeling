@@ -49,10 +49,16 @@ document.body.addEventListener('htmx:afterRequest', function(evt) {
     const errorTarget = document.getElementById("htmx-alert");
     if (!errorTarget) return;
 
-    if (evt.detail.successful) {
+    if (evt.detail.xhr.status >= 200 && evt.detail.xhr.status < 300) {
         hideAlert(errorTarget);
     } else {
         handleError(evt);
     }
 });
 
+document.body.addEventListener('htmx:afterSwap', function(evt) {
+var firstResult = document.querySelector('.list-group-item');
+if (firstResult) {
+  firstResult.focus();
+}
+});

@@ -20,7 +20,7 @@
 }
 
 .fixed-header {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -28,10 +28,6 @@
   background-color: #fff;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.container {
-  padding-top: 80px; /* Add padding to accommodate fixed header */
 }
 
 /* Next case button in mobile */
@@ -54,13 +50,8 @@
 /* Add positioning for the card to make it a relative container */
 .card-lg {
     position: relative;
-    margin-top: 4vh;
 }
-/* Adjust alert position */
-#htmx-alert {
-    margin-top: 5vh; /* Add margin to push alert below header */
-}
-/* Desktop Styles */
+
 @media (min-width: 768px) {
     /* Previous desktop styles remain */
     .product-image-container {
@@ -94,11 +85,6 @@
     /* Add positioning for the card to make it a relative container */
     .card-lg {
         position: relative;
-        margin-top: 6vh;
-    }
-    /* Adjust alert position */
-    #htmx-alert {
-        margin-top: 10vh; /* Add margin to push alert below header */
     }
     /* Adjust spacing for images in mobile view */
     .list-group-item {
@@ -138,5 +124,16 @@
     .action-buttons .btn {
         flex: 1;
         margin: 0 0.5rem;
+    }
+
+    #next-btn {
+        order: 1
+    }
+    #skip-btn {
+        order: 2
+    }
+
+    .fixed-header .header-extra-info {
+        display: none;
     }
 }
