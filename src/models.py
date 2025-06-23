@@ -99,8 +99,10 @@ class MarkupSession:
             None,
         )
         if existing:
-            self.results.remove(existing)
-        self.results.append(result)
+            existing.reranked_position = result.reranked_position
+            existing.is_relevant = result.is_relevant
+        else:
+            self.results.append(result)
 
     def complete(self):
         """Завершает сессию разметки"""
