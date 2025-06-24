@@ -1,4 +1,6 @@
-<div class="list-group-item p-4" id="{{ result.id }}">
+<div class="list-group-item p-4"
+     id="{{ result.id }}"
+     {% if result.position == 1 %}tabindex="-1"{% endif %}>
     <div class="d-flex flex-column flex-md-row gap-3">
         <!-- Product Image -->
         <div class="product-image-container">
