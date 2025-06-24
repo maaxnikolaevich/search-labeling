@@ -58,7 +58,6 @@ async def load_new_cases(
         excluded_queries=loaded_queries or None,
     )
     await cases_repo.save_all(search_cases)
-    return search_cases
 
 
 async def rate_search(

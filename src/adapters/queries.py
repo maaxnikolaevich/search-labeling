@@ -1,5 +1,3 @@
-from collections.abc import Sequence
-
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.future import select
 
@@ -7,7 +5,7 @@ from adapters import orm
 from models import SearchCase, SearchQuery
 
 
-async def get_active_cases(db_session: AsyncSession, user_id: str, limit: int) -> Sequence[SearchCase]:
+async def get_active_case(db_session: AsyncSession, user_id: str) -> SearchCase | None:
     """Запрашиваем кейсы, которые еще не назначались в сессии конктретному пользователю"""
     stmt = (
         select(SearchCase)
@@ -19,9 +17,8 @@ async def get_active_cases(db_session: AsyncSession, user_id: str, limit: int) -
             )
         )
         .where(orm.markup_session_table.c.user_id.is_(None))
-        .limit(limit)
     )
-    return (await db_session.execute(stmt)).unique().scalars().all()
+    return (await db_session.execute(stmt)).unique().scalars().first()
 
 
 async def get_search_queries(db_session: AsyncSession, limit: int | None = None) -> list[str]:
