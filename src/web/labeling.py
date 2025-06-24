@@ -6,10 +6,9 @@ from fastapi import APIRouter, Depends, Path, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 from starlette import status
-from starlette.responses import Response
 
 from adapters import queries
-from models import MarkupSession
+from models import MarkupResult, MarkupSession, SearchResult
 from services.labeling import (
     complete_session,
     load_new_cases,
@@ -36,6 +35,19 @@ class CreateResultSchema(BaseModel):
     search_session_id: str
     position: int | None = None
     is_relevant: bool | None = None
+
+
+def _to_result_items(search_results: list[SearchResult], markup_results: list[MarkupResult]) -> list[dict]:
+    items = []
+    markups_map = {mr.search_result_id: mr for mr in markup_results}
+
+    for result in search_results:
+        data = asdict(result)
+        if markups_map.get(result.id):
+            data["is_relevant"] = markups_map[result.id].is_relevant
+        items.append(data)
+
+    return items
 
 
 @router.get("/thankyou", response_class=HTMLResponse, name="thankyou")
@@ -81,14 +93,7 @@ async def index(
     if unfinished_session:
         unfinished_session.start()
 
-        search_results = []
-
-        for result in unfinished_session.search_case.results:
-            data = asdict(result)
-            for markup_result in unfinished_session.results:
-                if markup_result.search_result_id == result.id:
-                    data["is_relevant"] = markup_result.is_relevant
-            search_results.append(data)
+        search_results = _to_result_items(unfinished_session.search_case.results, unfinished_session.results)
 
         content = {
             "request": request,
@@ -124,12 +129,23 @@ async def index(
 
 
 @router.post("/results", name="rate_result")
-async def rate_search_result(data: CreateResultSchema, session_repository=Depends(get_session_repo)):
-    await rate_search(
+async def rate_search_result(
+    data: CreateResultSchema,
+    request: Request,
+    session_repository=Depends(get_session_repo),
+    templates=Depends(get_templates),
+):
+    session, result = await rate_search(
         data.search_session_id,
         data.is_relevant,
         data.position,
         data.search_result_id,
         session_repository,
     )
-    return Response(status_code=status.HTTP_204_NO_CONTENT, headers={"hx-refresh": "true"})
+
+    results_map = {result.id: result for result in session.search_case.results}
+    result_item = asdict(results_map[data.search_result_id])
+    result_item["is_relevant"] = result.is_relevant
+
+    context = {"request": request, "result": result_item, "session": session}
+    return templates.TemplateResponse("result_item.html", context)

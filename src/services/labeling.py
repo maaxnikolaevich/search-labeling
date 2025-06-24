@@ -66,7 +66,7 @@ async def rate_search(
     position: int | None,
     search_result_id: str,
     session_repo: AbstractMarkupSessionRepository,
-):
+) -> tuple[MarkupSession, MarkupResult]:
     """Сохраняет результат оценки"""
     session = await session_repo.get(session_id)
 
@@ -81,6 +81,7 @@ async def rate_search(
 
     session.add_result(result)
     await session_repo.save(session)
+    return session, result
 
 
 async def complete_session(session_id: str, session_repo: AbstractMarkupSessionRepository):
