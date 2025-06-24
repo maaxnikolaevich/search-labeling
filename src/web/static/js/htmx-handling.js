@@ -57,8 +57,12 @@ document.body.addEventListener('htmx:afterRequest', function(evt) {
 });
 
 document.body.addEventListener('htmx:afterSwap', function(evt) {
-var firstResult = document.querySelector('.list-group-item');
-if (firstResult) {
-  firstResult.focus();
-}
+    var trigger = evt.detail.requestConfig.elt;
+    if (trigger.id === "skip-btn" || trigger.id === "next-btn")
+    {
+        var firstResult = document.querySelector('.list-group-item');
+        if (firstResult) {
+          firstResult.focus();
+        }
+    }
 });
