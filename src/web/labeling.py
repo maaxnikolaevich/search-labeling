@@ -39,7 +39,7 @@ class CreateResultSchema(BaseModel):
 
 
 @router.get("/thankyou", response_class=HTMLResponse, name="thankyou")
-async def preview(
+async def thankyou(
     request: Request,
     templates=Depends(get_templates),
 ):
@@ -99,11 +99,16 @@ async def index(
         }
 
         await session_repository.save(unfinished_session)
-        return templates.TemplateResponse("labeling.html", content)
 
-    cases = await queries.get_active_cases(db_session=db_session, user_id=user.oidc_id, limit=1)
-    if not cases:
-        cases = await load_new_cases(
+        if request.headers.get("hx-request") == "true":
+            return templates.TemplateResponse("rate_card.html", content)
+        else:
+            return templates.TemplateResponse("page.html", content)
+
+    search_case = await queries.get_active_case(db_session=db_session, user_id=user.oidc_id)
+    if not search_case:
+        # Подгружаем если в бд пусто или не осталось не показанных для текущего пользователя
+        await load_new_cases(
             analytics_adapter=analytics_adapter,
             search_adapter=search_adapter,
             cases_repo=search_cases_repo,
@@ -111,8 +116,9 @@ async def index(
             cases_count=20,
             results_limit_per_case=10,
         )
+        return RedirectResponse(url=request.url_for("rate"), status_code=status.HTTP_302_FOUND)
 
-    await start_new_markup_session(user, cases[0], session_repository)
+    await start_new_markup_session(user, search_case, session_repository)
 
     return RedirectResponse(url=request.url_for("rate"), status_code=status.HTTP_302_FOUND)
 
@@ -126,4 +132,4 @@ async def rate_search_result(data: CreateResultSchema, session_repository=Depend
         data.search_result_id,
         session_repository,
     )
-    return Response(status_code=status.HTTP_204_NO_CONTENT, headers={"HX-Refresh": "true"})
+    return Response(status_code=status.HTTP_204_NO_CONTENT, headers={"hx-refresh": "true"})

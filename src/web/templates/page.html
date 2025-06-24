@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block body %}
+    <div id="spinner" class="htmx-indicator">
+        <h1>
+            Обработка запроса<span class="animated-dots"></span>
+        </h1>
+    </div>
+    <div class="page">
+        <div class="page-wrapper">
+            <div class="container mt-4">
+                <div tabindex="0"
+                     id="htmx-alert"
+                     hidden
+                     class="alert alert-danger sticky-bottom"></div>
+                {% include "rate_card.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
