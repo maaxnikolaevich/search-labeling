@@ -1,34 +1,34 @@
-## Приложение оценки и разметки поисковой выдачи 
+## Search labeling app
 
-## Установка для разработки:
+## Installing:
 
-- Устанавливаем [uv](https://docs.astral.sh/uv/getting-started/installation/)
-- Устанавливаем зависимости
+- Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- Install deps
 
 ```bash
 uv sync
 ```
 
-- Настраивам перемнные в `.env`
+- Setting vars in `.env`
 
 ```bash
 cp .env.example .env
 ```
 
-- Запуск
+- Launch 🚀
 
 ```bash
 cd src && uvicorn main:app --port=8000 --reload
 ```
 
-- Запуск в Docker через make
+- Launch with Docker through make
 ```bash
 make build
 ```
 ```bash
 make run
 ```
-- Накатываем миграции
+- Apply migrations
 ```bash
 make migrate
 ```
